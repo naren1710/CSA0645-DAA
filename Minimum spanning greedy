@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <time.h>
+
+#define MAX 100
+
+typedef struct Edge {
+  int src, dest, weight;
+} Edge;
+
+typedef struct Graph {
+  int V, E; 
+  Edge* edge;
+} Graph;
+
+Graph* createGraph(int V, int E) {
+  Graph* graph = (Graph*) malloc( sizeof(Graph) );
+  graph->V = V;
+  graph->E = E;
+  
+  graph->edge = (Edge*) malloc( graph->E * sizeof( Edge ) );
+  return graph;  
+}
+
+int find(int parent[], int i) {
+  if (parent[i] == -1)
+    return i;
+  return find(parent, parent[i]);
+}
+
+void applyUnion(int parent[], int x, int y) {
+  int xset = find(parent, x);
+  int yset = find(parent, y);
+  parent[xset] = yset;
+}
+
+void printMST(Graph* graph) {
+  int parent[graph->V];
+  
+  for (int i = 0; i < graph->V; i++)
+    parent[i] = -1; 
+    
+  int edge_count = 0;
+  int min_weight = 0;
+  
+  for (int i = 0; i < graph->E; i++) {
+    int x = find(parent, graph->edge[i].src);
+    int y = find(parent, graph->edge[i].dest);
+
+    if (x != y) {
+      edge_count++;
+      min_weight += graph->edge[i].weight;      
+      applyUnion(parent, x, y);      
+    }
+  }  
+  
+  printf("\nMinimum Spanning Tree:\n");
+  printf("Edge Count: %d \n", edge_count);
+  printf("Minimum Weight: %d\n", min_weight);  
+}
+
+int main() {
+  
+  int V, E, i; 
+  clock_t start, end;
+  double elapsed;
+  
+  printf("Enter number of vertices: ");
+  scanf("%d", &V);
+  
+  printf("Enter number of edges: ");
+  scanf("%d", &E);
+  
+  Graph* graph = createGraph(V, E);
+  
+  printf("\nEnter edge info:\n");
+  for(i=0; i<E; i++) {
+    printf("\nEdge %d\n", i+1);
+    printf("Source: ");    
+    scanf("%d", &graph->edge[i].src); 
+    
+    printf("Destination: ");
+    scanf("%d", &graph->edge[i].dest);
+    
+    printf("Weight: ");
+    scanf("%d", &graph->edge[i].weight);    
+  }  
+  
+  start = clock();
+  printMST(graph); 
+  end = clock();
+
+  elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;  
+  
+  printf("\nTime to find MST: %lf seconds", elapsed);
+  
+  printf("\n\nTime Complexity: O(ElogV)");
+  
+  return 0;
+}

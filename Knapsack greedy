@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+int main() {
+
+  int n, capacity;
+  float totalValue = 0;
+  
+  printf("Enter knapsack capacity: ");
+  scanf("%d", &capacity);
+
+  printf("Enter number of objects: ");
+  scanf("%d", &n);
+
+  int weights[n], values[n], indices[n];
+  
+  printf("Enter weights and values:\n");
+
+  for(int i=0; i<n; i++) {
+    scanf("%d %d", &weights[i], &values[i]);
+    indices[i] = i;
+  }
+
+  for(int i=0; i<n; i++) {
+    for(int j=i+1; j<n; j++) {
+      float r1 = (float)values[i] / weights[i];
+      float r2 = (float)values[j] / weights[j];
+
+      if(r1 < r2) {
+
+        // Swap items
+        int temp = values[i];
+        values[i] = values[j];
+        values[j] = temp;
+
+        temp = weights[i];
+        weights[i] = weights[j];     
+        weights[j] = temp;
+
+        temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+      }
+    }
+  }
+
+  
+  for(int i=0; i<n; i++) { 
+    if(weights[i] <= capacity) {
+      capacity -= weights[i];
+      totalValue += values[i];
+      printf("Item %d included\n", indices[i]+1); 
+    } else {
+      break;
+    }
+  }
+
+  printf("Total value obtained: %f\n", totalValue);
+
+  return 0;
+}

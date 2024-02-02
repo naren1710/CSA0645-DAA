@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <limits.h>
+
+void findFirstTwoMin(int arr[], int n) {
+    if (n < 2) {
+        printf("Insufficient number of elements to find two minimum values.\n");
+        return;
+    }
+
+    int firstMin = INT_MAX;
+    int secondMin = INT_MAX;
+
+    for (int i = 0; i < n; i++) {
+        if (arr[i] < firstMin) {
+            secondMin = firstMin;
+            firstMin = arr[i];
+        } else if (arr[i] < secondMin && arr[i] != firstMin) {
+            secondMin = arr[i];
+        }
+    }
+
+    printf("First two minimum values: (%d, %d)\n", firstMin, secondMin);
+}
+
+int main() {
+    int n;
+
+    printf("Enter the size of the array: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid array size.\n");
+        return 1;
+    }
+
+    int arr[n];
+
+    printf("Enter the array elements: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    findFirstTwoMin(arr, n);
+
+    return 0;
+}
